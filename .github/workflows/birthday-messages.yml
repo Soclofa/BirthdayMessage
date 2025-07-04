@@ -1,0 +1,28 @@
+name: Send Birthday Messages
+
+on:
+  schedule:
+    - cron: '0 9 * * *' # Runs every day at 9:00am (adjust as needed)
+  workflow_dispatch:      # Allows manual trigger
+
+jobs:
+  send-birthday-messages:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+
+      - name: Install dependencies
+        run: npm install node-fetch@2 @sendgrid/mail firebase-admin
+
+      - name: Run birthday script
+        env:
+          FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
+          SENDGRID_API_KEY: ${{ secrets.SENDGRID_API_KEY }}
+        run: node .github/scripts/sendBirthdayMessages.js
