@@ -23,13 +23,12 @@ async function main() {
       const [year, userMonth, userDay] = user.birthday.split("-");
       if (userMonth === month && userDay === day) {
         // Prepare email
-        const emailParams = new EmailParams()
-          .setFrom("your@verifieddomain.com") // must be a verified sender/domain
-          .setFromName("FanAddicts")
-          .setSubject("Happy Birthday from FanAddicts!")
-          .setHtml(`<strong>Happy Birthday, ${user.username}! 🎉</strong>`)
-          .setText(`Happy Birthday, ${user.username}! 🎉`)
-          .addRecipient(new Recipient(user.email, user.username));
+       const emailParams = new EmailParams()
+  .setFrom("your@verifieddomain.com", "FanAddicts") // email, name
+  .setSubject("Happy Birthday from FanAddicts!")
+  .setHtml(`<strong>Happy Birthday, ${user.username}! 🎉</strong>`)
+  .setText(`Happy Birthday, ${user.username}! 🎉`)
+  .addRecipient(new Recipient(user.email, user.username));
 
         try {
           await mailersend.email.send(emailParams);
