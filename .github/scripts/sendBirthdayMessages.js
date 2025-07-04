@@ -1,15 +1,13 @@
+const { MailerSend, EmailParams, Recipient } = require("mailersend");
 const admin = require("firebase-admin");
-const sgMail = require("@sendgrid/mail");
 
-// Parse service account from env
+// Firebase setup (same as before)
 const serviceAccount = JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT);
-
-admin.initializeApp({
-  credential: admin.credential.cert(serviceAccount),
-});
+admin.initializeApp({ credential: admin.credential.cert(serviceAccount) });
 const db = admin.firestore();
 
-sgMail.setApiKey(process.env.SENDGRID_API_KEY);
+// MailerSend setup
+const mailersend = new MailerSend({ apiKey: process.env.MAILERSEND_API_KEY });
 
 async function main() {
   const today = new Date();
@@ -21,20 +19,20 @@ async function main() {
 
   for (const doc of usersSnapshot.docs) {
     const user = doc.data();
-    console.log("Checking user:", user.email, "Birthday:", user.birthday);
     if (user.birthday) {
       const [year, userMonth, userDay] = user.birthday.split("-");
       if (userMonth === month && userDay === day) {
-        // Send email
-        const msg = {
-          to: user.email,
-          from: "your@email.com", // Change to your verified sender
-          subject: "Happy Birthday from FanAddicts!",
-          text: `Happy Birthday, ${user.username}! 🎉`,
-          html: `<strong>Happy Birthday, ${user.username}! 🎉</strong>`,
-        };
+        // Prepare email
+        const emailParams = new EmailParams()
+          .setFrom("your@verifieddomain.com") // must be a verified sender/domain
+          .setFromName("FanAddicts")
+          .setSubject("Happy Birthday from FanAddicts!")
+          .setHtml(`<strong>Happy Birthday, ${user.username}! 🎉</strong>`)
+          .setText(`Happy Birthday, ${user.username}! 🎉`)
+          .addRecipient(new Recipient(user.email, user.username));
+
         try {
-          await sgMail.send(msg);
+          await mailersend.email.send(emailParams);
           sentCount++;
           console.log(`Sent birthday email to ${user.email}`);
         } catch (err) {
