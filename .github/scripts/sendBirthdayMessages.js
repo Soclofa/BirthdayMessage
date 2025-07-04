@@ -26,7 +26,7 @@ async function main() {
         const recipients = [new Recipient(user.email, user.username)];
         try {
           await mailersend.email.send({
-            from: "your@verifieddomain.com", // must be a verified sender
+            from: "noreply@test-zkq340eykjkgd796.mlsender.net", // MailerSend test domain
             from_name: "FanAddicts",
             to: recipients,
             subject: "Happy Birthday from FanAddicts!",
@@ -36,7 +36,7 @@ async function main() {
           sentCount++;
           console.log(`Sent birthday email to ${user.email}`);
         } catch (err) {
-          console.error(`Failed to send to ${user.email}:`, err.message);
+          console.error(`Failed to send to ${user.email}:`, err);
         }
       }
     }
