@@ -19,10 +19,11 @@ jobs:
           node-version: '18'
 
       - name: Install dependencies
-        run: npm install node-fetch@2 @sendgrid/mail firebase-admin
+        run: npm install mailersend firebase-admin
+    
 
       - name: Run birthday script
         env:
           FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
-          SENDGRID_API_KEY: ${{ secrets.SENDGRID_API_KEY }}
+          MAILERSEND_API_KEY: ${{ secrets.MAILERSEND_API_KEY }}
         run: node .github/scripts/sendBirthdayMessages.js
