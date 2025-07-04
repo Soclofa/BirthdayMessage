@@ -21,6 +21,7 @@ async function main() {
 
   for (const doc of usersSnapshot.docs) {
     const user = doc.data();
+    console.log("Checking user:", user.email, "Birthday:", user.birthday);
     if (user.birthday) {
       const [year, userMonth, userDay] = user.birthday.split("-");
       if (userMonth === month && userDay === day) {
