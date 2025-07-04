@@ -1,7 +1,7 @@
-const { MailerSend, EmailParams, Recipient } = require("mailersend");
+const { MailerSend, Recipient } = require("mailersend");
 const admin = require("firebase-admin");
 
-// Firebase setup (same as before)
+// Firebase setup
 const serviceAccount = JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT);
 admin.initializeApp({ credential: admin.credential.cert(serviceAccount) });
 const db = admin.firestore();
@@ -23,15 +23,16 @@ async function main() {
       const [year, userMonth, userDay] = user.birthday.split("-");
       if (userMonth === month && userDay === day) {
         // Prepare email
-       const emailParams = new EmailParams()
-  .setFrom("your@verifieddomain.com", "FanAddicts") // email, name
-  .setSubject("Happy Birthday from FanAddicts!")
-  .setHtml(`<strong>Happy Birthday, ${user.username}! 🎉</strong>`)
-  .setText(`Happy Birthday, ${user.username}! 🎉`)
-  .addRecipient(new Recipient(user.email, user.username));
-
+        const recipients = [new Recipient(user.email, user.username)];
         try {
-          await mailersend.email.send(emailParams);
+          await mailersend.email.send({
+            from: "your@verifieddomain.com", // must be a verified sender
+            from_name: "FanAddicts",
+            to: recipients,
+            subject: "Happy Birthday from FanAddicts!",
+            html: `<strong>Happy Birthday, ${user.username}! 🎉</strong>`,
+            text: `Happy Birthday, ${user.username}! 🎉`,
+          });
           sentCount++;
           console.log(`Sent birthday email to ${user.email}`);
         } catch (err) {
