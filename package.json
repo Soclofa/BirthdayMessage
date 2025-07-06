@@ -1,0 +1,29 @@
+{
+  "name": "birthday-automation",
+  "version": "1.0.0",
+  "description": "Automated birthday email sender using Firebase Firestore and Gmail API",
+  "main": "birthday-checker.js",
+  "scripts": {
+    "start": "node birthday-checker.js",
+    "test": "node test-birthday-checker.js",
+    "setup-oauth": "node generate-token.js",
+    "test-oauth": "node generate-token.js test"
+  },
+  "dependencies": {
+    "firebase-admin": "^12.7.0",
+    "google-auth-library": "^9.15.1",
+    "googleapis": "^130.0.0"
+  },
+  "devDependencies": {
+    "jest": "^29.0.0"
+  },
+  "keywords": [
+    "birthday",
+    "automation",
+    "firebase",
+    "gmail",
+    "nodejs"
+  ],
+  "author": "Your Name",
+  "license": "MIT"
+}
