@@ -4,7 +4,7 @@
   "description": "Automated birthday email sender using Firebase Firestore and Gmail API",
   "main": "birthday-checker.js",
   "scripts": {
-    "start": "node birthday-automation.js",
+    "start": "node birthday-automation.js"
   },
   "dependencies": {
     "firebase-admin": "^12.7.0",
