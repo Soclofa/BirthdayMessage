@@ -1,29 +1,40 @@
-name: Send Birthday Messages
+name: Birthday Automation
 
 on:
   schedule:
-    - cron: '0 9 * * *' # Runs every day at 9:00am (adjust as needed)
-  workflow_dispatch:      # Allows manual trigger
+    # Runs daily at 9:00 AM UTC (adjust timezone as needed)
+    - cron: '0 9 * * *'
+  
+  # Allow manual triggering for testing
+  workflow_dispatch:
 
 jobs:
-  send-birthday-messages:
+  send-birthday-emails:
     runs-on: ubuntu-latest
-
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
-
-      - name: Set up Node.js
-        uses: actions/setup-node@v3
-        with:
-          node-version: '18'
-
-      - name: Install dependencies
-        run: npm install mailersend firebase-admin
     
-
-      - name: Run birthday script
-        env:
-          FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
-          MAILERSEND_API_KEY: ${{ secrets.MAILERSEND_API_KEY }}
-        run: node .github/scripts/sendBirthdayMessages.js
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+      
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '18'
+        cache: 'npm'
+        
+    - name: Install dependencies
+      run: npm ci
+      
+    - name: Create Firebase service account file
+      run: echo '${{ secrets.FIREBASE_SERVICE_ACCOUNT }}' > firebase-service-account.json
+      
+    - name: Create OAuth credentials file  
+      run: echo '${{ secrets.OAUTH_CREDENTIALS }}' > oauth-credentials.json
+      
+    - name: Create Gmail token file
+      run: echo '${{ secrets.GMAIL_TOKEN }}' > gmail-token.json
+      
+    - name: Run birthday automation
+      run: npm start
+      env:
+        NODE_NO_WARNINGS: 1
